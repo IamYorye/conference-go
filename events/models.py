@@ -32,6 +32,7 @@ class Location(models.Model):
     room_count = models.PositiveSmallIntegerField()
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    picture_url = models.TextField(null=True)
 
     state = models.ForeignKey(
         State,
@@ -53,10 +54,7 @@ class Conference(models.Model):
     """
     The Conference model describes a specific conference.
     """
-
-    # Has a one-to-many relationship with presentations.Presentation
-    # Has a one-to-many relationship with attendees.Attendee
-
+    weather = models.TextField(null=True)
     name = models.CharField(max_length=200)
     starts = models.DateTimeField()
     ends = models.DateTimeField()
