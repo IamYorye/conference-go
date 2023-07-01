@@ -1,13 +1,14 @@
 from django.http import JsonResponse
 from .models import Conference, Location
-from common.json import ModelEncoder, DateEncoder, QuerySetEncoder
+from common.json import ModelEncoder
 from django.views.decorators.http import require_http_methods
 import json
 from events.models import State
 from .acls import get_photo, get_weather_data
 
 
-class ConferenceListEnconder(ModelEncoder, QuerySetEncoder):
+
+class ConferenceListEnconder(ModelEncoder):
     model = Conference
     properties = ["name"]
 
@@ -42,7 +43,7 @@ class LocationListEncoder(ModelEncoder):
         "name",
         ]
 
-class ConferenceDetailEncoder(DateEncoder, ModelEncoder):
+class ConferenceDetailEncoder(ModelEncoder):
     model = Conference
     properties = [
         "name",
@@ -94,7 +95,7 @@ def api_show_conference(request, id):
         )
 
 
-class ListLocationEncoder(ModelEncoder, QuerySetEncoder):
+class ListLocationEncoder(ModelEncoder):
     model = Location
     properties = [
         "name",
@@ -131,7 +132,7 @@ def api_list_locations(request):
             safe=False
         )
 
-class LocationDetailEncoder(ModelEncoder, DateEncoder):
+class LocationDetailEncoder(ModelEncoder):
     model = Location
     properties = [
         "name",

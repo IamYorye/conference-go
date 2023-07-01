@@ -1,15 +1,14 @@
 from django.http import JsonResponse
-from .models import Attendee, ConferenceVO
-from common.json import ModelEncoder, DateEncoder, QuerySetEncoder
+from .models import Attendee, ConferenceVO, AccountVO
+from common.json import ModelEncoder
 from django.views.decorators.http import require_http_methods
 import json
-from attendees.models import Attendee
 
 class ConferenceVODetailEncoder(ModelEncoder):
     model = ConferenceVO
     properties = ["name", "import_href"]
 
-class AttendeesListEncoder(ModelEncoder, QuerySetEncoder):
+class AttendeesListEncoder(ModelEncoder):
     model = Attendee
     properties = ["name"]
 
@@ -40,7 +39,7 @@ def api_list_attendees(request, conference_vo_id=None):
             safe=False
             )
 
-class AttendeeShowEncoder(ModelEncoder, DateEncoder, QuerySetEncoder):
+class AttendeeShowEncoder(ModelEncoder):
     model = Attendee
     properties = [
         "email",
@@ -52,6 +51,13 @@ class AttendeeShowEncoder(ModelEncoder, DateEncoder, QuerySetEncoder):
     encoders = {
     "conference": ConferenceVODetailEncoder(),
     }
+    def get_extra_data(self, o):
+        account_count = AccountVO.objects.filter(email=o.email).count()
+        if account_count > 0:
+            return {"has_account": True}
+        else:
+            return {"has_account": False}
+
 
 @require_http_methods(["GET", "PUT", "DELETE"])
 def api_show_attendee(request, id):
